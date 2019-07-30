@@ -61,7 +61,14 @@ function creature(array $ids = [])
             type,
             type_flags,
             lootid, pickpocketloot, skinloot,
-            0 AS spell1, 0 AS spell2, 0 AS spell3, 0 AS spell4, 0 AS spell5, 0 AS spell6, 0 AS spell7, 0 AS spell8,
+            IFNULL(cts1.spell, 0) AS spell1,
+            IFNULL(cts2.spell, 0) AS spell2,
+            IFNULL(cts3.spell, 0) AS spell3,
+            IFNULL(cts4.spell, 0) AS spell4,
+            IFNULL(cts5.spell, 0) AS spell5,
+            IFNULL(cts6.spell, 0) AS spell6,
+            IFNULL(cts7.spell, 0) AS spell7,
+            IFNULL(cts8.spell, 0) AS spell8,
             PetSpellDataId,
             VehicleId,
             mingold, maxgold,
@@ -92,6 +99,22 @@ function creature(array $ids = [])
             creature_template_locale ctl6 ON ct.entry = ctl6.entry AND ctl6.`locale` = "esES"
         LEFT JOIN
             creature_template_locale ctl8 ON ct.entry = ctl8.entry AND ctl8.`locale` = "ruRU"
+        LEFT JOIN
+            creature_template_spell cts1 ON cts1.CreatureID = ct.entry AND cts1.index = 0
+        LEFT JOIN
+            creature_template_spell cts2 ON cts2.CreatureID = ct.entry AND cts2.index = 1
+        LEFT JOIN
+            creature_template_spell cts3 ON cts3.CreatureID = ct.entry AND cts3.index = 2
+        LEFT JOIN
+            creature_template_spell cts4 ON cts4.CreatureID = ct.entry AND cts4.index = 3
+        LEFT JOIN
+            creature_template_spell cts5 ON cts5.CreatureID = ct.entry AND cts5.index = 4
+        LEFT JOIN
+            creature_template_spell cts6 ON cts6.CreatureID = ct.entry AND cts6.index = 5
+        LEFT JOIN
+            creature_template_spell cts7 ON cts7.CreatureID = ct.entry AND cts7.index = 6
+        LEFT JOIN
+            creature_template_spell cts8 ON cts8.CreatureID = ct.entry AND cts8.index = 7
         LEFT JOIN
             instance_encounters ie ON ie.creditEntry = ct.entry AND ie.creditType = 0
         WHERE
