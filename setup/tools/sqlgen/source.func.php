@@ -1086,7 +1086,10 @@ function source(array $ids = [])
 
     #  6: Trainer
     CLI::write('   * #6  Trainer');
-    if ($tNpcs = DB::World()->select('SELECT SpellID AS ARRAY_KEY, ID AS entry, COUNT(1) AS qty FROM npc_trainer WHERE SpellID > 0 GROUP BY ARRAY_KEY'))
+    if ($tNpcs = DB::World()->select('SELECT SpellID AS ARRAY_KEY, CreatureId AS entry, COUNT(1) AS qty 
+    FROM trainer_spell trs
+    JOIN creature_default_trainer cdt ON cdt.TrainerId = trs.TrainerId
+    WHERE SpellID > 0 GROUP BY ARRAY_KEY'))
     {
         $tSpells = DB::Aowow()->select('SELECT id AS ARRAY_KEY, effect1Id, effect2Id, effect3Id, effect1TriggerSpell, effect2TriggerSpell, effect3TriggerSpell FROM dbc_spell WHERE id IN (?a)', array_keys($tNpcs));
         $buff    = [];
