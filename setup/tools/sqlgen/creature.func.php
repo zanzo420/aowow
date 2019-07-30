@@ -48,7 +48,7 @@ function creature(array $ids = [])
             unit_class,
             unit_flags, unit_flags2, dynamicflags,
             family,
-            0 AS trainer_type,
+            tr.Type AS trainer_type,
             0 AS trainer_spell,
             0 AS trainer_class,
             0 AS trainer_race,
@@ -58,7 +58,7 @@ function creature(array $ids = [])
             max.attackpower AS mleAtkPwrMax,
             min.rangedattackpower AS rmgAtkPwrMin,
             max.rangedattackpower AS rmgAtkPwrMax,
-            type,
+            ct.type,
             type_flags,
             lootid, pickpocketloot, skinloot,
             IFNULL(cts1.spell, 0) AS spell1,
@@ -115,6 +115,10 @@ function creature(array $ids = [])
             creature_template_spell cts7 ON cts7.CreatureID = ct.entry AND cts7.index = 6
         LEFT JOIN
             creature_template_spell cts8 ON cts8.CreatureID = ct.entry AND cts8.index = 7
+        LEFT JOIN
+            creature_default_trainer cdt ON cdt.CreatureId = ct.entry
+        LEFT JOIN
+            trainer tr ON tr.Id = cdt.TrainerId
         LEFT JOIN
             instance_encounters ie ON ie.creditEntry = ct.entry AND ie.creditType = 0
         WHERE
