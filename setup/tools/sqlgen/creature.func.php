@@ -48,7 +48,7 @@ function creature(array $ids = [])
             unit_class,
             unit_flags, unit_flags2, dynamicflags,
             family,
-            tr.Type AS trainer_type,
+            IFNULL(tr.Type, 0) AS trainer_type,
             0 AS trainer_spell,
             0 AS trainer_class,
             0 AS trainer_race,
