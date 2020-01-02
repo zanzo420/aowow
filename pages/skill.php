@@ -251,7 +251,8 @@ class SkillPage extends GenericPage
         {
             $list = [];
             if (!empty(Game::$trainerTemplates[TYPE_SKILL][$this->typeId]))
-                $list = DB::World()->selectCol('SELECT DISTINCT ID FROM npc_trainer WHERE SpellID IN (?a) AND ID < 200000', Game::$trainerTemplates[TYPE_SKILL][$this->typeId]);
+                $list = DB::World()->selectCol('SELECT DISTINCT CreatureId FROM world.creature_default_trainer cdt JOIN trainer_spell ts ON cdt.TrainerId = ts.TrainerId WHERE ts.ReqSkillLine = ?d',
+                                               $this->typeId);
             else
             {
                 $mask = 0;
