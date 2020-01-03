@@ -89,7 +89,7 @@ function spell()
             EffectSpellClassMaskC1,                 EffectSpellClassMaskC2,                 EffectSpellClassMaskC3,
             0 AS iconId,                            0 AS iconIdAlt,
             0 AS rankId,                            0 AS spellVisualId1,
-            CONCAT("Serverside - ",Comment) AS name_loc0,CONCAT("Serverside - ",Comment) AS name_loc2,CONCAT("Serverside - ",Comment) AS name_loc3,CONCAT("Serverside - ",Comment) AS name_loc4,CONCAT("Serverside - ",Comment) AS name_loc6,CONCAT("Serverside - ",Comment) AS name_loc8,
+            CONCAT("Serverside - ",SpellName) AS name_loc0,CONCAT("Serverside - ",SpellName) AS name_loc2,CONCAT("Serverside - ",SpellName) AS name_loc3,CONCAT("Serverside - ",SpellName) AS name_loc4,CONCAT("Serverside - ",SpellName) AS name_loc6,CONCAT("Serverside - ",SpellName) AS name_loc8,
             "" AS rank_loc0,                        "" AS rank_loc2,                        "" AS rank_loc3,                        "" AS rank_loc4,                        "" AS rank_loc6,                        "" AS rank_loc8,
             "" AS description_loc0,                 "" AS description_loc2,                 "" AS description_loc3,                 "" AS description_loc4,                 "" AS description_loc6,                 "" AS description_loc8,
             "" AS buff_loc0,                        "" AS buff_loc2,                        "" AS buff_loc3,                        "" AS buff_loc4,                        "" AS buff_loc6,                        "" AS buff_loc8,
@@ -367,7 +367,7 @@ function spell()
     }
 
     // fill learnedAt, trainingCost from trainer
-    if ($trainer = DB::World()->select('SELECT SpellID AS ARRAY_KEY, MIN(ReqSkillRank) AS reqSkill, MIN(MoneyCost) AS cost, COUNT(*) AS count FROM npc_trainer GROUP BY SpellID'))
+    if ($trainer = DB::World()->select('SELECT SpellID AS ARRAY_KEY, MIN(ReqSkillRank) AS reqSkill, MIN(MoneyCost) AS cost, COUNT(*) AS count FROM trainer_spell GROUP BY SpellID'))
     {
         $spells = DB::Aowow()->select('SELECT id AS ARRAY_KEY, effect1Id, effect2Id, effect3Id, effect1TriggerSpell, effect2TriggerSpell, effect3TriggerSpell FROM dbc_spell WHERE id IN (?a)', array_keys($trainer));
         $links  = [];
@@ -514,9 +514,9 @@ function spell()
         201031 => 10656,
         201032 => 10658
     );
-    foreach ($specs as $tt => $req)
-        if ($spells = DB::World()->selectCol('SELECT SpellID FROM npc_trainer WHERE ID = ?d', $tt))
-            DB::Aowow()->query('UPDATE ?_spell SET reqSpellId = ?d WHERE id IN (?a)', $req, $spells);
+    //foreach ($specs as $tt => $req)
+    //   if ($spells = DB::World()->selectCol('SELECT SpellID FROM npc_trainer WHERE ID = ?d', $tt))
+    //        DB::Aowow()->query('UPDATE ?_spell SET reqSpellId = ?d WHERE id IN (?a)', $req, $spells);
 
     $itemReqs = DB::World()->selectCol('SELECT entry AS ARRAY_KEY, requiredSpell FROM item_template WHERE requiredSpell NOT IN (?a)', [0, 34090, 34091]); // not riding
     foreach ($itemReqs AS $itemId => $req)
@@ -633,14 +633,7 @@ function spell()
     // npc spells (-8) (run as last! .. missing from npc_scripts? "enum Spells { \s+(\w\d_)+\s+=\s(\d+) }" and "#define SPELL_(\d\w_)+\s+(\d+)") // RAID_MODE(1, 2[, 3, 4]) - macro still not considered
     $world = DB::World()->selectCol('
         SELECT ss.action_param1 FROM smart_scripts ss WHERE ss.action_type IN (11, 75, 85, 86) UNION
-        SELECT ct.spell1 FROM creature_template ct WHERE ct.spell1 <> 0                        UNION
-        SELECT ct.spell2 FROM creature_template ct WHERE ct.spell2 <> 0                        UNION
-        SELECT ct.spell3 FROM creature_template ct WHERE ct.spell3 <> 0                        UNION
-        SELECT ct.spell4 FROM creature_template ct WHERE ct.spell4 <> 0                        UNION
-        SELECT ct.spell5 FROM creature_template ct WHERE ct.spell5 <> 0                        UNION
-        SELECT ct.spell6 FROM creature_template ct WHERE ct.spell6 <> 0                        UNION
-        SELECT ct.spell7 FROM creature_template ct WHERE ct.spell7 <> 0                        UNION
-        SELECT ct.spell8 FROM creature_template ct WHERE ct.spell8 <> 0'
+        SELECT cts.spell FROM creature_template_spell cts WHERE cts.spell <> 0'
     );
 
     $auras = DB::World()->selectCol('SELECT cta.auras FROM creature_template_addon cta WHERE auras <> ""');

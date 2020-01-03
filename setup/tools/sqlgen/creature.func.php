@@ -48,20 +48,27 @@ function creature(array $ids = [])
             unit_class,
             unit_flags, unit_flags2, dynamicflags,
             family,
-            trainer_type,
-            trainer_spell,
-            trainer_class,
-            trainer_race,
+            IFNULL(tr.Type, 0) AS trainer_type,
+            (CASE tr.Type WHEN 2 THEN tr.Requirement ELSE 0 END) AS trainer_spell,
+            (CASE tr.Type WHEN 0 THEN tr.Requirement ELSE 0 END) AS trainer_class,
+            (CASE tr.Type WHEN 1 THEN tr.Requirement ELSE 0 END) AS trainer_race,
             (CASE ct.exp WHEN 0 THEN min.damage_base WHEN 1 THEN min.damage_exp1 ELSE min.damage_exp2 END) AS dmgMin,
             (CASE ct.exp WHEN 0 THEN max.damage_base WHEN 1 THEN max.damage_exp1 ELSE max.damage_exp2 END) AS dmgMax,
             min.attackpower AS mleAtkPwrMin,
             max.attackpower AS mleAtkPwrMax,
             min.rangedattackpower AS rmgAtkPwrMin,
             max.rangedattackpower AS rmgAtkPwrMax,
-            type,
+            ct.type,
             type_flags,
             lootid, pickpocketloot, skinloot,
-            spell1, spell2, spell3, spell4, spell5, spell6, spell7, spell8,
+            IFNULL(cts1.spell, 0) AS spell1,
+            IFNULL(cts2.spell, 0) AS spell2,
+            IFNULL(cts3.spell, 0) AS spell3,
+            IFNULL(cts4.spell, 0) AS spell4,
+            IFNULL(cts5.spell, 0) AS spell5,
+            IFNULL(cts6.spell, 0) AS spell6,
+            IFNULL(cts7.spell, 0) AS spell7,
+            IFNULL(cts8.spell, 0) AS spell8,
             PetSpellDataId,
             VehicleId,
             mingold, maxgold,
@@ -92,6 +99,26 @@ function creature(array $ids = [])
             creature_template_locale ctl6 ON ct.entry = ctl6.entry AND ctl6.`locale` = "esES"
         LEFT JOIN
             creature_template_locale ctl8 ON ct.entry = ctl8.entry AND ctl8.`locale` = "ruRU"
+        LEFT JOIN
+            creature_template_spell cts1 ON cts1.CreatureID = ct.entry AND cts1.index = 0
+        LEFT JOIN
+            creature_template_spell cts2 ON cts2.CreatureID = ct.entry AND cts2.index = 1
+        LEFT JOIN
+            creature_template_spell cts3 ON cts3.CreatureID = ct.entry AND cts3.index = 2
+        LEFT JOIN
+            creature_template_spell cts4 ON cts4.CreatureID = ct.entry AND cts4.index = 3
+        LEFT JOIN
+            creature_template_spell cts5 ON cts5.CreatureID = ct.entry AND cts5.index = 4
+        LEFT JOIN
+            creature_template_spell cts6 ON cts6.CreatureID = ct.entry AND cts6.index = 5
+        LEFT JOIN
+            creature_template_spell cts7 ON cts7.CreatureID = ct.entry AND cts7.index = 6
+        LEFT JOIN
+            creature_template_spell cts8 ON cts8.CreatureID = ct.entry AND cts8.index = 7
+        LEFT JOIN
+            creature_default_trainer cdt ON cdt.CreatureId = ct.entry
+        LEFT JOIN
+            trainer tr ON tr.Id = cdt.TrainerId
         LEFT JOIN
             instance_encounters ie ON ie.creditEntry = ct.entry AND ie.creditType = 0
         WHERE
