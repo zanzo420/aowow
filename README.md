@@ -42,7 +42,7 @@ audio processing may require [lame](https://sourceforge.net/projects/lame/files/
 ## Install
 
 #### 1. Acquire the required repositories
-`git clone git@github.com:Sarjuuk/aowow.git aowow`  
+`git clone git@github.com:TrinityCore/aowow.git aowow`  
 `git clone git@github.com:Sarjuuk/MPQExtractor.git MPQExtractor`  
 
 #### 2. Prepare the database  
