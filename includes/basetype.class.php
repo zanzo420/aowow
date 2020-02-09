@@ -332,6 +332,7 @@ abstract class BaseType
     {
         if (isset($this->templates[$id]))
         {
+            unset($this->curTpl);
             $this->curTpl = $this->templates[$id];
             $this->id     = $id;
             return $this->templates[$id];
